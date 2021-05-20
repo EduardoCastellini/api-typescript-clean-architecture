@@ -9,6 +9,8 @@
   "author": "Eduardo Castellini",
   "license": "ISC",
   "devDependencies": {
-    "git-commit-msg-linter": "^3.1.0"
+    "@types/node": "^15.3.1",
+    "git-commit-msg-linter": "^3.1.0",
+    "typecript": "*"
   }
 }
