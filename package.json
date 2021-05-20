@@ -6,19 +6,8 @@
   "scripts": {
     "test": "jest --passWithNoTests",
     "test:staged": "jest --passWithNoTests",
-    "prepare": "husky install"
-  },
-  "husky": {  
-    "hooks": {  
-      "pre-commit": "lint-staged"
-    }  
-  },
-  "lint-staged": {  
-    "*.ts": [
-      "eslint 'src/**' --fix",
-      "npm run test:staged",
-      "git add"
-    ] 
+    "prepare": "husky install",
+    "pre-commit-lint": "npx lint-staged"
   },
   "author": "Eduardo Castellini",
   "license": "ISC",
