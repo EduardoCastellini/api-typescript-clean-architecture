@@ -14,7 +14,7 @@ const makeSut = (): sutTypes => {
 }
 
 describe('SignUp Controller', () => {
-  test('Shoud return 400 if no name is provided', () => {
+  test('Shoud return 400 if no name is provided', async () => {
     const { sut } = makeSut()
 
     const httpResquest = {
@@ -30,7 +30,7 @@ describe('SignUp Controller', () => {
       }
     }
 
-    const httpResponse = sut.handle(httpResquest)
+    const httpResponse = await sut.handle(httpResquest)
 
     expect(httpResponse.statusCode).toBe(400)
     expect(httpResponse.body).toEqual(new MissingParamError('name'))
