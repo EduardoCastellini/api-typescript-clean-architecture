@@ -1,6 +1,6 @@
-import { Controller, HttpResponse, HttpRequest } from '../protocols'
-import { MissingParamError } from '../errors'
-import { badRequest } from '../helpers/http-helper'
+import { Controller, HttpResponse, HttpRequest } from '../../protocols'
+import { MissingParamError } from '../../errors'
+import { badRequest } from '../../helpers/http-helper'
 
 export class CustomerController implements Controller {
   handle (httpResquest: HttpRequest): HttpResponse {
