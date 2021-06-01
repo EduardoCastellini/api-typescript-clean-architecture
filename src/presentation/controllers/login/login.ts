@@ -1,9 +1,17 @@
 import { MissingParamError } from '../../errors'
-import { badRequest } from '../../helpers/http-helper'
+import { badRequest, ok } from '../../helpers/http-helper'
 import { Controller, HttpRequest, HttpResponse } from '../../protocols'
 
 export class LoginController implements Controller {
   async handle (httpResquest: HttpRequest): Promise<HttpResponse> {
-    return badRequest(new MissingParamError('email'))
+    if (!httpResquest.body.email) {
+      return await new Promise(resolve => resolve(badRequest(new MissingParamError('email'))))
+    }
+
+    if (!httpResquest.body.password) {
+      return await new Promise(resolve => resolve(badRequest(new MissingParamError('password'))))
+    }
+
+    return await new Promise(resolve => resolve(ok('')))
   }
 }
