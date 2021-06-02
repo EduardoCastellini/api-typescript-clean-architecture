@@ -2,6 +2,7 @@ import { LoginController } from './login'
 import { badRequest, serverError } from '../../helpers/http-helper'
 import { MissingParamError, InvalidParamError } from '../../errors'
 import { EmailValidator, HttpRequest } from '../singup/singup-protocols'
+import { Authentication } from '../../../domain/usecases/authentication'
 
 const makeEmailValidator = (): EmailValidator => {
   class EmailValidatorStub implements EmailValidator {
@@ -10,6 +11,15 @@ const makeEmailValidator = (): EmailValidator => {
     }
   }
   return new EmailValidatorStub()
+}
+
+const makeAuthentication = (): Authentication => {
+  class AuthenticationStub implements Authentication {
+    async auth (email: string, password: string): Promise<string> {
+      return await new Promise(resolve => resolve('any_token'))
+    }
+  }
+  return new AuthenticationStub()
 }
 
 const mekeHttpResquest = (): HttpRequest => ({
@@ -21,14 +31,17 @@ const mekeHttpResquest = (): HttpRequest => ({
 interface SutTypes {
   sut: LoginController
   emaiValidatorStub: EmailValidator
+  authentication: Authentication
 }
 
 const makeSut = (): SutTypes => {
   const emaiValidatorStub = makeEmailValidator()
-  const sut = new LoginController(emaiValidatorStub)
+  const authentication = makeAuthentication()
+  const sut = new LoginController(emaiValidatorStub, authentication)
   return {
     sut,
-    emaiValidatorStub
+    emaiValidatorStub,
+    authentication
   }
 }
 
@@ -76,5 +89,12 @@ describe('Login Controller', () => {
     })
     const httpResponse = await sut.handle(mekeHttpResquest())
     expect(httpResponse).toEqual(serverError(new Error()))
+  })
+
+  test('Shoud call authentication with correct values', async () => {
+    const { sut, authentication } = makeSut()
+    const authSpy = jest.spyOn(authentication, 'auth')
+    await sut.handle(mekeHttpResquest())
+    expect(authSpy).toHaveBeenCalledWith('any_email@mail.com', 'any_password')
   })
 })
