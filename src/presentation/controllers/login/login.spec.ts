@@ -1,5 +1,5 @@
 import { LoginController } from './login'
-import { badRequest, serverError } from '../../helpers/http-helper'
+import { badRequest, serverError, unauthorized } from '../../helpers/http-helper'
 import { MissingParamError, InvalidParamError } from '../../errors'
 import { EmailValidator, HttpRequest } from '../singup/singup-protocols'
 import { Authentication } from '../../../domain/usecases/authentication'
@@ -15,7 +15,7 @@ const makeEmailValidator = (): EmailValidator => {
 
 const makeAuthentication = (): Authentication => {
   class AuthenticationStub implements Authentication {
-    async auth (email: string, password: string): Promise<string> {
+    async auth (email: string, password: string): Promise<string|null> {
       return await new Promise(resolve => resolve('any_token'))
     }
   }
@@ -31,17 +31,17 @@ const mekeHttpResquest = (): HttpRequest => ({
 interface SutTypes {
   sut: LoginController
   emaiValidatorStub: EmailValidator
-  authentication: Authentication
+  authenticationStub: Authentication
 }
 
 const makeSut = (): SutTypes => {
   const emaiValidatorStub = makeEmailValidator()
-  const authentication = makeAuthentication()
-  const sut = new LoginController(emaiValidatorStub, authentication)
+  const authenticationStub = makeAuthentication()
+  const sut = new LoginController(emaiValidatorStub, authenticationStub)
   return {
     sut,
     emaiValidatorStub,
-    authentication
+    authenticationStub
   }
 }
 
@@ -92,9 +92,16 @@ describe('Login Controller', () => {
   })
 
   test('Shoud call authentication with correct values', async () => {
-    const { sut, authentication } = makeSut()
-    const authSpy = jest.spyOn(authentication, 'auth')
+    const { sut, authenticationStub } = makeSut()
+    const authSpy = jest.spyOn(authenticationStub, 'auth')
     await sut.handle(mekeHttpResquest())
     expect(authSpy).toHaveBeenCalledWith('any_email@mail.com', 'any_password')
+  })
+
+  test('Shoud return 401 if Invalid credentials are provided', async () => {
+    const { sut, authenticationStub } = makeSut()
+    jest.spyOn(authenticationStub, 'auth').mockReturnValueOnce(new Promise(resolve => resolve(null)))
+    const httpResponse = await sut.handle(mekeHttpResquest())
+    expect(httpResponse).toEqual(unauthorized())
   })
 })
