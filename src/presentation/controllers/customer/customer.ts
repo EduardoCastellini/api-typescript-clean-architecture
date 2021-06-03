@@ -1,6 +1,6 @@
 import { Controller, HttpResponse, HttpRequest } from '../../protocols'
 import { MissingParamError } from '../../errors'
-import { badRequest } from '../../helpers/http-helper'
+import { badRequest } from '../../helpers/http/http-helper'
 
 export class CustomerController implements Controller {
   async handle (httpResquest: HttpRequest): Promise<HttpResponse> {
