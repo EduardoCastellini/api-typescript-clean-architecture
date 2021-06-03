@@ -32,12 +32,14 @@ describe('Bcrypt Adapter', () => {
     expect(hash).toBe('hash')
   })
 
-  // test('should throw if hash throws ', async () => {
-  //   const sut = makeSut()
-  //   jest.spyOn(bcrypt, 'hash').mockReturnValueOnce(new Promise((resolve, reject) => reject(new Error())))
-  //   const promisse = sut.hash('any_value')
-  //   await expect(promisse).rejects.toThrow()
-  // })
+  test('should throw if hash throws ', async () => {
+    const sut = makeSut()
+    jest.spyOn(bcrypt, 'hash').mockImplementationOnce(() => {
+      throw new Error()
+    })
+    const promisse = sut.hash('any_value')
+    await expect(promisse).rejects.toThrow()
+  })
 
   test('should call compare with correct values', async () => {
     const sut = makeSut()
@@ -52,17 +54,21 @@ describe('Bcrypt Adapter', () => {
     expect(isValid).toBe(true)
   })
 
-  // test('should return false when compare fails', async () => {
-  //   const sut = makeSut()
-  //   jest.spyOn(bcrypt, 'compare').mockReturnValueOnce(new Promise(resolve => resolve(false)))
-  //   const isValid = await sut.compare('any_value', 'any_hash')
-  //   expect(isValid).toBe(false)
-  // })
+  test('should return false when compare fails', async () => {
+    const sut = makeSut()
+    jest.spyOn(bcrypt, 'compare').mockImplementationOnce(() => {
+      return false
+    })
+    const isValid = await sut.compare('any_value', 'any_hash')
+    expect(isValid).toBe(false)
+  })
 
-  // test('should throw if comoare throws ', async () => {
-  //   const sut = makeSut()
-  //   jest.spyOn(bcrypt, 'compare').mockReturnValueOnce(new Promise((resolve, reject) => reject(new Error())))
-  //   const promisse = sut.compare('any_value', 'any_hash')
-  //   await expect(promisse).rejects.toThrow()
-  // })
+  test('should throw if comoare throws ', async () => {
+    const sut = makeSut()
+    jest.spyOn(bcrypt, 'compare').mockImplementationOnce(() => {
+      throw new Error()
+    })
+    const promisse = sut.compare('any_value', 'any_hash')
+    await expect(promisse).rejects.toThrow()
+  })
 })
