@@ -1,11 +1,11 @@
-import { ValidationComposit } from '../../presentation/helpers/validators/validation-composit'
+import { ValidationComposite } from '../../presentation/helpers/validators/validation-composite'
 import { RequeiredFieldValidation } from '../../presentation/helpers/validators/required-field-validation'
 import { CompareFieldValidation } from '../../presentation/helpers/validators/compare-fields-validation'
 import { Validation } from '../../presentation/helpers/validators/validation'
 import { EmailValidation } from '../../presentation/helpers/validators/email-validation'
 import { EmailValidatorAdapter } from '../../utils/email-validator-adapter'
 
-export const makeSingUpValidation = (): ValidationComposit => {
+export const makeSingUpValidation = (): ValidationComposite => {
   const validations: Validation[] = []
 
   for (const field of ['name', 'email', 'password', 'passwordConfirmation']) {
@@ -16,5 +16,5 @@ export const makeSingUpValidation = (): ValidationComposit => {
 
   validations.push(new EmailValidation('email', new EmailValidatorAdapter()))
 
-  return new ValidationComposit(validations)
+  return new ValidationComposite(validations)
 }
