@@ -1,4 +1,4 @@
-import { CustomerController } from './customer'
+import { CustomerController } from './customer-controller'
 import { MissingParamError } from '../../errors'
 
 interface sutTypes {
