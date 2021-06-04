@@ -4,7 +4,7 @@ import { MongoHelper } from '../../infra/db/mongodb/helpers/mongo-helper'
 
 const MONGO_URL = process.env.MONGO_URL ? process.env.MONGO_URL : ''
 
-describe('sugnUp routes', () => {
+describe('Login Routes', () => {
   beforeAll(async () => {
     await MongoHelper.connect(MONGO_URL)
   })
@@ -18,15 +18,17 @@ describe('sugnUp routes', () => {
     await MongoHelper.disconnect()
   })
 
-  test('Shoul return an account on success ', async () => {
-    await request(app)
-      .post('/api/signup')
-      .send({
-        name: 'Eduardo',
-        email: 'eduardo@test.com.br',
-        password: '123',
-        passwordConfirmation: '123'
-      })
-      .expect(200)
+  describe('POST /signup', () => {
+    test('Shoul return 200 on signup ', async () => {
+      await request(app)
+        .post('/api/signup')
+        .send({
+          name: 'Eduardo',
+          email: 'eduardo@test.com.br',
+          password: '123',
+          passwordConfirmation: '123'
+        })
+        .expect(200)
+    })
   })
 })
