@@ -13,10 +13,12 @@ services:
     build: .
     restart: always
     image: api-typescript-clean
-    command: npm start
+    command: npm run debug
     volumes: 
       - ./dist:/usr/src/api-typescript-clean/dist
+      - ./package.json:/usr/src/api-typescript-clean/package.json
     ports: 
       - "5050:5050"
+      - "9222:9222"
     links: 
       - mongo
