@@ -70,7 +70,7 @@ describe('DbAddAccount Usecase', () => {
     expect(hashSpy).toHaveBeenCalledWith('valid_password')
   })
 
-  test('Should throe if Hasher throws', async () => {
+  test('Should throws if Hasher throws', async () => {
     const { hasherStub, sut } = makeSut()
     jest.spyOn(hasherStub, 'hash').mockReturnValueOnce(new Promise((resolve, reject) => reject(new Error())))
     const promisse = sut.add(makeFakeAccountData())
