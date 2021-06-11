@@ -11,23 +11,27 @@ const makeFakeAccount = (): AccountModel => ({
   password: 'valid_password'
 })
 
-interface SutTypes {
-  sut: AuthMiddleware
-  loadAccountByToken: LoadAccountByToken
-}
-
-const makeSut = (): SutTypes => {
+const makeLoadAccountByToken = (): LoadAccountByToken => {
   class LoadAccountByTokenStub implements LoadAccountByToken {
     async load (accessToken: string, role?: string): Promise<AccountModel> {
       return await new Promise(resolve => resolve(makeFakeAccount()))
     }
   }
 
-  const loadAccountByToken = new LoadAccountByTokenStub()
-  const sut = new AuthMiddleware(loadAccountByToken)
+  return new LoadAccountByTokenStub()
+}
+
+interface SutTypes {
+  sut: AuthMiddleware
+  loadAccountByTokenStub: LoadAccountByToken
+}
+
+const makeSut = (): SutTypes => {
+  const loadAccountByTokenStub = makeLoadAccountByToken()
+  const sut = new AuthMiddleware(loadAccountByTokenStub)
   return {
     sut,
-    loadAccountByToken
+    loadAccountByTokenStub
   }
 }
 
@@ -39,8 +43,8 @@ describe('Auth Middleware', () => {
   })
 
   test('Should call LoadAccountByToken with correct AccessToken', async () => {
-    const { sut, loadAccountByToken } = makeSut()
-    const loadSpy = jest.spyOn(loadAccountByToken, 'load')
+    const { sut, loadAccountByTokenStub } = makeSut()
+    const loadSpy = jest.spyOn(loadAccountByTokenStub, 'load')
     await sut.handle({ headers: { 'x-access-token': 'any_token' } })
     expect(loadSpy).toHaveBeenCalledWith('any_token')
   })
